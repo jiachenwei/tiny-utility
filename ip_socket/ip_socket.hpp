@@ -21,7 +21,7 @@
 
 int init_tcp_ip_server(const uint port);
 int init_tcp_ip_client(const char* const ip_addr, const uint port);
-int wait_tcp_ip_request();
+int wait_tcp_ip_request(const int socket_fd);
 int recv_tcp_ip_msg(const int accpet_fd, const SocketMessage* msg);
 int send_tcp_ip_msg(const int socket_fd, const SocketMessage* msg);
 int close_tcp_ip_server(const int accpet_fd);
@@ -29,7 +29,6 @@ int close_tcp_ip_client(const int socket_fd);
 
 int init_udp_ip_server(const uint port);
 int init_udp_ip_client(const char* const ip_addr, const uint port);
-int wait_tcp_ip_request();
 int recv_udp_ip_msg(const int socket_fd, const SocketMessage* msg);
 int send_udp_ip_msg(const int socket_fd, const SocketMessage* msg);
 int close_udp_ip_server(const int socket_fd);

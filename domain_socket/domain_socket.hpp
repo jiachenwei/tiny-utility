@@ -24,7 +24,6 @@ int close_tcp_domain_client(const int socket_fd);
 
 int init_udp_domain_server(const char *const socket_addr);
 int init_udp_domain_client(const char *const socket_addr);
-int wait_udp_domain_request();
 int recv_udp_domain_msg(const int socket_fd, const SocketMessage *msg);
 int send_udp_domain_msg(const int socket_fd, const SocketMessage *msg);
 int close_udp_domain_server(const int socket_fd);
