@@ -13,11 +13,11 @@ include_directories( ./domain_socket )
 
 link_directories( ./domain_socket )
 
-set(domain_socket_test_server domain_socket_test_server.cpp socket_message.hpp)
-set(domain_socket_test_client domain_socket_test_client.cpp socket_message.hpp)
+set(domain_socket_test_server_source domain_socket_test_server.cpp socket_message.hpp)
+set(domain_socket_test_client_source domain_socket_test_client.cpp socket_message.hpp)
 
-add_executable(domain_socket_test_server ${domain_socket_test_server})
-add_executable(domain_socket_test_client ${domain_socket_test_client})
+add_executable(domain_socket_test_server ${domain_socket_test_server_source})
+add_executable(domain_socket_test_client ${domain_socket_test_client_source})
 
 target_link_libraries(domain_socket_test_server domain_socket)
 target_link_libraries(domain_socket_test_client domain_socket)

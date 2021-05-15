@@ -13,37 +13,26 @@
 #include "../socket_message.hpp"
 
 int init_tcp_domain_server(const char *const socket_addr);
-
 int init_tcp_domain_client(const char *const socket_addr);
-
+int wait_tcp_domain_request();
 int recv_tcp_domain_msg(const int accpet_fd, const SocketMessage *msg);
-
 int send_tcp_domain_msg(const int socket_fd, const SocketMessage *msg);
-
 int close_tcp_domain_server(const int accpet_fd);
-
 int close_tcp_domain_client(const int socket_fd);
 
 ///////////////////////////////////////////////////////////////////
 
 int init_udp_domain_server(const char *const socket_addr);
-
 int init_udp_domain_client(const char *const socket_addr);
-
+int wait_udp_domain_request();
 int recv_udp_domain_msg(const int socket_fd, const SocketMessage *msg);
-
 int send_udp_domain_msg(const int socket_fd, const SocketMessage *msg);
-
 int close_udp_domain_server(const int socket_fd);
-
 int close_udp_domain_client(const int socket_fd);
 
 ///////////////////////////////////////////////////////////////////
 
 int close_all_tcp_domain_server();
-
 int close_all_tcp_domain_client();
-
 int close_all_udp_domain_server();
-
 int close_all_udp_domain_client();
