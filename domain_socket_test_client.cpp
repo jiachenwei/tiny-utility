@@ -16,22 +16,25 @@ int main() {
     msg.len = BUFFER_SIZE_;
     msg.buf = (char*)malloc(msg.len);
 
-    // cout << "TCP Domain Socket Test." << endl;
-    // client_socket_fd = init_tcp_domain_client(SOCKET_ADDR_);
+    cout << "TCP Domain Socket Test." << endl;
+    client_socket_fd = init_tcp_domain_client(SOCKET_ADDR_);
+    for (size_t i = 0; i < 10; i++) {
+        std::cout << "Input messege>>> ";
+        fgets(msg.buf, msg.len, stdin);
+        ret = send_tcp_domain_msg(client_socket_fd, &msg);
+        cout << "(" << ret << ")" << msg.buf << endl;
+    }
+
+    ret = close_tcp_domain_client(client_socket_fd);
+    cout << "(" << ret << ")" << endl;
+
+    // cout << "UDP Domain Socket Test." << endl;
+    // client_socket_fd = init_udp_domain_client(SOCKET_ADDR_);
     // std::cout << "Input messege>>> ";
     // fgets(msg.buf, msg.len, stdin);
-    // ret = send_tcp_domain_msg(client_socket_fd, &msg);
+    // ret = send_udp_domain_msg(client_socket_fd, &msg);
     // cout << "(" << ret << ")" << msg.buf << endl;
-    // ret = close_tcp_domain_client(client_socket_fd);
+    // ret = close_udp_domain_client(client_socket_fd);
     // cout << "(" << ret << ")" << endl;
-
-    cout << "UDP Domain Socket Test." << endl;
-    client_socket_fd = init_udp_domain_client(SOCKET_ADDR_);
-    std::cout << "Input messege>>> ";
-    fgets(msg.buf, msg.len, stdin);
-    ret = send_udp_domain_msg(client_socket_fd, &msg);
-    cout << "(" << ret << ")" << msg.buf << endl;
-    ret = close_udp_domain_client(client_socket_fd);
-    cout << "(" << ret << ")" << endl;
     return 0;
 }

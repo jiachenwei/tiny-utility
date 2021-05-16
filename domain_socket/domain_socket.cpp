@@ -12,12 +12,7 @@
 #include <iostream>
 #include <vector>
 
-typedef struct SocketFileDescriptor {
-    int socket_fd;
-    int accept_fd;
-} SocketFileDescriptor;
-
-std::vector<SocketFileDescriptor> tcp_domain_socket_server_list;
+std::vector<int> tcp_domain_socket_server_list;
 std::vector<int> udp_domain_socket_server_list;
 
 std::vector<int> tcp_domain_socket_client_list;
@@ -28,19 +23,19 @@ std::vector<int> udp_domain_socket_client_list;
 /**
  * @brief 初始化一个tcp域套接字服务端
  * @param  socket_addr      域套接字地址
- * @return int 域套接字服务端的accept_fd
+ * @return int 域套接字服务端的socket_fd
  */
 int init_tcp_domain_server(const char *const socket_addr) {
     int ret = 0;
+    int socket_fd = 0;
     struct sockaddr_un server_addr;
-    SocketFileDescriptor fd;
 
     // 1. 创建套接字
     std::cout << "Socket create...";
 
-    fd.socket_fd = socket(PF_UNIX, SOCK_STREAM, 0);
+    socket_fd = socket(PF_UNIX, SOCK_STREAM, 0);
 
-    if (fd.socket_fd < 0) {
+    if (socket_fd < 0) {
         std::cout << "failed!" << std::endl;
         return -1;
     } else {
@@ -57,7 +52,7 @@ int init_tcp_domain_server(const char *const socket_addr) {
 
     // 绑定套接字
     std::cout << "Binding socket...";
-    ret = bind(fd.socket_fd, (sockaddr *)&server_addr, sizeof(server_addr));
+    ret = bind(socket_fd, (sockaddr *)&server_addr, sizeof(server_addr));
 
     if (ret < 0) {
         std::cout << "failed!" << std::endl;
@@ -68,7 +63,7 @@ int init_tcp_domain_server(const char *const socket_addr) {
 
     // 3. 监听套接字
     std::cout << "Listen socket...";
-    ret = listen(fd.socket_fd, 10);  // 最大监听数量10
+    ret = listen(socket_fd, MAX_LISTEN_NUM);  // 最大监听数量10
 
     if (ret < 0) {
         std::cout << "failed!" << std::endl;
@@ -77,20 +72,9 @@ int init_tcp_domain_server(const char *const socket_addr) {
         std::cout << "success!" << std::endl;
     }
 
-    std::cout << "Waiting for new requests...";
+    tcp_domain_socket_server_list.push_back(socket_fd);
 
-    ret = fd.accept_fd = accept(fd.socket_fd, NULL, NULL);
-
-    if (ret < 0) {
-        std::cout << "failed!" << std::endl;
-        return -1;
-    } else {
-        std::cout << "success!" << std::endl;
-    }
-
-    tcp_domain_socket_server_list.push_back(fd);
-
-    return fd.accept_fd;
+    return socket_fd;
 }
 
 /**
@@ -135,14 +119,64 @@ int init_tcp_domain_client(const char *const socket_addr) {
 }
 
 /**
- * @brief tcp域套接字服务端接收数据
- * @param  accpet_fd        服务端的accpet_fd
+ * @brief tcp域套接字服务端接收数据，服务端接收完数据主动释放连接
+ * @param  socket_fd        服务端的socket_fd
  * @param  msg              数据缓存的指针
  * @return int 如果接收成功，返回接收的字节数;如果接收失败，返回-1
  */
-int recv_tcp_domain_msg(const int accpet_fd, const SocketMessage *msg) {
+int recv_tcp_domain_msg(const int socket_fd, const SocketMessage *msg) {
+    int ret = 0;
+    int accept_fd = 0;
+
+    std::cout << "Waiting for new requests...";
+
+    ret = accept_fd = accept(socket_fd, NULL, NULL);
+
+    if (ret < 0) {
+        std::cout << "failed!" << std::endl;
+        return -1;
+    } else {
+        std::cout << "success!" << std::endl;
+    }
+
     bzero(msg->buf, msg->len);
-    return recv(accpet_fd, msg->buf, msg->len, 0);
+    ret = recv(accept_fd, msg->buf, msg->len, 0);
+    close(accept_fd);
+
+    return ret;
+}
+/**
+ * @brief tcp域套接字服务端接收数据，不主动释放链接
+ * @param  socket_fd        服务端的socket_fd
+ * @param  accept_fd
+ * 服务端的accept_fd;如果为0,则建立新的accept_fd;如果不为零，则在此accept_fd上接收数据
+ * @param  msg              存放数据的缓存指针
+ * @return int
+ * 如果接收成功，返回接收的字节数;如果接收失败，关闭accept_fd，返回-1
+ */
+int recv_tcp_domain_msg_durable(const int &socket_fd, int &accept_fd,
+                                const SocketMessage *msg) {
+    int ret = 0;
+    if (accept_fd == 0) {
+        std::cout << "Waiting for new requests...";
+        ret = accept_fd = accept(socket_fd, NULL, NULL);
+    }
+
+    if (ret < 0) {
+        std::cout << "failed!" << std::endl;
+        return -1;
+    } else {
+        std::cout << "success!" << std::endl;
+    }
+
+    bzero(msg->buf, msg->len);
+    ret = recv(accept_fd, msg->buf, msg->len, 0);
+    if (ret <= 0) {
+        close(accept_fd);
+        accept_fd = 0;
+        std::cout << "request has been released!" << std::endl;
+    }
+    return ret;
 }
 
 /**
@@ -157,24 +191,18 @@ int send_tcp_domain_msg(const int socket_fd, const SocketMessage *msg) {
 
 /**
  * @brief 关闭一个tcp域套接字服务端
- * @param  accpet_fd        被关闭服务端的accpet_fd
+ * @param  socket_fd        被关闭服务端的socket_fd
  * @return int 如果关闭成功，返回1;如果关闭失败，返回-1
  */
-int close_tcp_domain_server(const int accpet_fd) {
-    int socket_fd = 0;
+int close_tcp_domain_server(const int socket_fd) {
     size_t i = 0;
-    std::vector<SocketFileDescriptor>::iterator it;
+    std::vector<int>::iterator it;
     for (it = tcp_domain_socket_server_list.begin();
          it != tcp_domain_socket_server_list.end(); ++it, ++i) {
-        if ((*it).accept_fd == accpet_fd) {
-            socket_fd = (*it).accept_fd;
-            break;
-        }
-    }
+        if (*it == socket_fd) break;
+    };
 
     if (i > tcp_domain_socket_server_list.size()) return -1;
-
-    close(accpet_fd);
     close(socket_fd);
 
     tcp_domain_socket_server_list.erase(it);
@@ -362,12 +390,12 @@ int close_udp_domain_client(const int socket_fd) {
  * @return int 如果关闭成功，返回1;如果关闭失败，返回-1
  */
 int close_all_tcp_domain_server() {
-    std::vector<SocketFileDescriptor>::iterator it;
+    std::vector<int>::iterator it;
     for (it = tcp_domain_socket_server_list.begin();
          it != tcp_domain_socket_server_list.end(); ++it) {
-        if (close((*it).accept_fd) < 0 || close((*it).socket_fd) < 0) return -1;
+        if (close(*it) < 0) return -1;
         tcp_domain_socket_server_list.erase(it);
-    }
+    };
 
     return 1;
 }
