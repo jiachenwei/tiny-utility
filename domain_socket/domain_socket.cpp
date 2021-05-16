@@ -191,7 +191,7 @@ int send_tcp_domain_msg(const int socket_fd, const SocketMessage *msg) {
 
 /**
  * @brief 关闭一个tcp域套接字服务端
- * @param  socket_fd        被关闭服务端的socket_fd
+ * @param  socket_fd        被关闭tcp域套接服务端的socket_fd
  * @return int 如果关闭成功，返回1;如果关闭失败，返回-1
  */
 int close_tcp_domain_server(const int socket_fd) {
@@ -212,7 +212,7 @@ int close_tcp_domain_server(const int socket_fd) {
 
 /**
  * @brief 关闭一个tcp域套接字客户端
- * @param  socket_fd        socket_fd
+ * @param  socket_fd        被关闭tcp域套接字客户端的socket_fd
  * @return int 如果关闭成功，返回1;如果关闭失败，返回-1
  */
 int close_tcp_domain_client(const int socket_fd) {
@@ -263,7 +263,7 @@ int init_udp_domain_server(const char *const socket_addr) {
     server_addr.sun_family = PF_UNIX;
     strcpy(server_addr.sun_path, socket_addr);
 
-    // 绑定套接字
+    // 2. 绑定套接字
     std::cout << "Binding socket...";
     ret = bind(socket_fd, (sockaddr *)&server_addr, sizeof(server_addr));
 

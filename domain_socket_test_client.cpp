@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "domain_socket.hpp"
+#include "domain_socket/domain_socket.hpp"
 
 #define SOCKET_ADDR_ "./test_domain_socket"
 #define BUFFER_SIZE_ 10240

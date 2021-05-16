@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "domain_socket.hpp"
+#include "domain_socket/domain_socket.hpp"
 #include "malloc.h"
 
 #define SOCKET_ADDR_ "./test_domain_socket"
