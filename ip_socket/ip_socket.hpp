@@ -6,14 +6,9 @@
  * @date 2021-05-16
  */
 #include <arpa/inet.h>
-#include <netinet/in.h>
 #include <sys/socket.h>
-#include <sys/types.h>
 #include <unistd.h>
 
-#include <cerrno>
-#include <cstdio>
-#include <cstdlib>
 #include <cstring>
 
 #include "../socket_message.hpp"

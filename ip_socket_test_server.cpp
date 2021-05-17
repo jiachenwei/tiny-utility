@@ -15,15 +15,15 @@ int main() {
     msg.len = BUFFER_SIZE_;
     msg.buf = (char*)malloc(msg.len);
 
-    // cout << "TCP Domain Socket Test." << endl;
-    // server_socket_fd = init_tcp_ip_server(SERVER_PORT_);
-    // while (1) {
-    //     ret = recv_tcp_ip_msg_durable(server_socket_fd, server_accept_fd,
-    //     &msg); cout << "(" << ret << ")"
-    //          << ":Received messege from remote: " << msg.buf << endl;
-    // }
-    // ret = close_tcp_ip_server(server_socket_fd);
-    // cout << "(" << ret << ")" << endl;
+    cout << "TCP Domain Socket Test." << endl;
+    server_socket_fd = init_tcp_ip_server(SERVER_PORT_);
+    while (1) {
+        ret = recv_tcp_ip_msg_durable(server_socket_fd, server_accept_fd, &msg);
+        cout << "(" << ret << ")"
+             << ":Received messege from remote: " << msg.buf << endl;
+    }
+    ret = close_tcp_ip_server(server_socket_fd);
+    cout << "(" << ret << ")" << endl;
 
     cout << "UDP Domain Socket Test." << endl;
     server_socket_fd = init_udp_ip_server(SERVER_PORT_);
