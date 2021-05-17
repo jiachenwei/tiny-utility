@@ -22,11 +22,11 @@
 
 int init_tcp_ip_server(const uint port);
 int init_tcp_ip_client(const char* const ip_addr, const uint port);
-int recv_tcp_ip_msg(const int accpet_fd, const SocketMessage* msg);
+int recv_tcp_ip_msg(const int socket_fd, const SocketMessage* msg);
 int recv_tcp_ip_msg_durable(const int& socket_fd, int& accept_fd,
                             const SocketMessage* msg);
 int send_tcp_ip_msg(const int socket_fd, const SocketMessage* msg);
-int close_tcp_ip_server(const int accpet_fd);
+int close_tcp_ip_server(const int socket_fd);
 int close_tcp_ip_client(const int socket_fd);
 
 int init_udp_ip_server(const uint port);
