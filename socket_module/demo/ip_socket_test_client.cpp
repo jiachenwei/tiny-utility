@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "ip_socket/ip_socket.hpp"
+#include "../ip_socket/ip_socket.hpp"
 
 #define SERVER_ADDR_ "127.0.0.1"
 #define SERVER_PORT_ 1234

@@ -1,2 +1,6 @@
 build/*
 .vscode/*
+socket_module/build/*
+socket_module/.vscode/*
+keyboard_control/build/*
+keyboard_control/.vscode/*

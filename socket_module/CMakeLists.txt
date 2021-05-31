@@ -14,10 +14,10 @@ include_directories( ./domain_socket ./ip_socket)
 
 link_directories( ./domain_socket ./ip_socket)
 
-set(domain_socket_test_server_source domain_socket_test_server.cpp socket_message.hpp)
-set(domain_socket_test_client_source domain_socket_test_client.cpp socket_message.hpp)
-set(ip_socket_test_server_source ip_socket_test_server.cpp socket_message.hpp)
-set(ip_socket_test_client_source ip_socket_test_client.cpp socket_message.hpp)
+set(domain_socket_test_server_source demo/domain_socket_test_server.cpp socket_message.hpp)
+set(domain_socket_test_client_source demo/domain_socket_test_client.cpp socket_message.hpp)
+set(ip_socket_test_server_source demo/ip_socket_test_server.cpp socket_message.hpp)
+set(ip_socket_test_client_source demo/ip_socket_test_client.cpp socket_message.hpp)
 
 add_executable(domain_socket_test_server ${domain_socket_test_server_source})
 add_executable(domain_socket_test_client ${domain_socket_test_client_source})

@@ -1,7 +1,8 @@
+#include <malloc.h>
+
 #include <iostream>
 
-#include "ip_socket/ip_socket.hpp"
-#include "malloc.h"
+#include "../ip_socket/ip_socket.hpp"
 
 #define SERVER_PORT_ 1234
 #define BUFFER_SIZE_ 10240
